@@ -9,6 +9,30 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+// user model
+model User {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  email      String   @unique
+  username   String
+  password   String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now())
+  stats     Stats[]
+}
+
+// defining the stats interface
+
+type Stats {
+  words       Word[]
+  word_count  Int
+}
+
+// defining the a word
+type Word {
+  name   String
+  date   DateTime @default(now())
 }
