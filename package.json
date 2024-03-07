@@ -16,6 +16,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@prisma/client": "^5.10.2",
     "mongodb": "^6.4.0"
   }
 }
