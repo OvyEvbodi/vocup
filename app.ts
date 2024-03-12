@@ -27,7 +27,7 @@ app.post('/signup', (req, res) => {
 
   // encrypt password
   bcrypt.hash(password, saltRounds, (error, hash) => {
-    //handle errors
+    //handle errors and set status code 400 for bad request
     // coming soon
 
      // create user in databse
@@ -44,6 +44,7 @@ app.post('/signup', (req, res) => {
       .catch (async (error) => {
         console.log("an error occured /n/n/n")
         console.log(error)
+        res.status(500)
         process.exit(1)
       })
       .finally(async() => {
