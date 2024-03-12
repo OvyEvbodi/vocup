@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import express from 'express'
+import jsonwebtoken from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
 const app = express();
 const PORT = 8080;
@@ -34,5 +36,5 @@ app.get('/database', (req, res) => {
 })
 
   app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`)
+    console.log(`Listening on http://localhost:${PORT}`)
   })
