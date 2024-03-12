@@ -2,3 +2,4 @@
 .env
 X509-cert-4420263467025038611.pem
 notes.txt
+.DS_Store
