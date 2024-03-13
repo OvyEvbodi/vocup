@@ -78,7 +78,14 @@ app.post('/signup', (req, res) => {
   })
 })
 
+// signin---------------------------------------------------------------------
 app.post('/signin', (req, res) => {
+  // set response headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Origin', 'https://vocup.vercel.app');
+  res.setHeader('Content-Type', 'Application/json');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+
   // get user data
   const { email, password } = req.body;
 
