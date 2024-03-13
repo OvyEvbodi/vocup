@@ -17,11 +17,21 @@ const jwtSecret:Secret = process.env.JWT_SECRET!;
 // express middleware
 app.use(express.json())
 
+// Allow CORS 
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Origin', '*');
+  res.setHeader('Content-Type', 'Application/json');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  next()
+})
+
 app.get('/', (_, res) => {
   res.send('Welcome to PrisMongEx')
 })
 
-// sign up
+
+// sign up--------------------------------------------------------------------------------------
 app.post('/signup', (req, res) => {
   const saltRounds: number = 9;
 
