@@ -1,12 +1,18 @@
 import { PrismaClient } from "@prisma/client"
 import express from 'express'
-import jsonwebtoken from 'jsonwebtoken'
+import jsonwebtoken, { Secret } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
 const app = express();
+
+// express parameters
 const PORT = 8080;
 
+// database parameters
 const database = new PrismaClient();
+
+// jsonwebtoken setup
+const jwtSecret:Secret = process.env.JWT_SECRET!;
 
 // express middleware
 app.use(express.json())
@@ -89,11 +95,15 @@ app.post('/signin', (req, res) => {
       const match: boolean = await bcrypt.compare(password, user[0].password)
       if (match) {
         // create jwt (1 day expiration)
-        
+        const jwt = jsonwebtoken.sign({ email, password }, jwtSecret, { expiresIn: 86400 });
         res.status(200)
         res.type('json')
         // send jwt and user data (minus password) in response
-        res.send({ msg: 'welcome' })
+        res.send({
+          msg: 'signin sucessful',
+          jwt,
+          user
+       })
         res.end()
       }
       else {
