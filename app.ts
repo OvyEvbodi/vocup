@@ -91,7 +91,7 @@ app.post('/signin', (req, res) => {
 
   // check for user in database
   const dbConnection = async () => {
-    const user = await database.user.findMany({
+    const user = await database.user.findUnique({
       where: {
         email: email
       }
@@ -101,7 +101,8 @@ app.post('/signin', (req, res) => {
 
   dbConnection()
   .then(async (user) => {
-    if (user.length === 0) {
+    console.log(user)
+    if (!user) {
       res.status(404)
       res.type('json')
       res.send({ msg: 'user not found, please sign in' })
@@ -109,7 +110,10 @@ app.post('/signin', (req, res) => {
     }
     // check that passwords match
     try {
-      const match: boolean = await bcrypt.compare(password, user[0].password)
+      if (!user) {
+        return 
+      }
+      const match: boolean = await bcrypt.compare(password, user.password)
       if (match) {
         // create jwt (1 day expiration)
         const jwt = jsonwebtoken.sign({ email, password }, jwtSecret, { expiresIn: 86400 });
@@ -119,7 +123,8 @@ app.post('/signin', (req, res) => {
         res.send({
           msg: 'signin sucessful',
           jwt,
-          user
+          email: user.email,
+          username: user.username
        })
         res.end()
       }
