@@ -17,7 +17,7 @@ app.get('/', (_, res) => {
 
 // sign up
 app.post('/signup', (req, res) => {
-  const saltRounds = 9;
+  const saltRounds: number = 9;
 
   // get user object
   const { email, username, password } = req.body;
@@ -39,7 +39,7 @@ app.post('/signup', (req, res) => {
           email
         }
       })
-    }
+    };
     dbConnection()
       .catch (async (error) => {
         console.log("an error occured /n/n/n")
@@ -62,6 +62,59 @@ app.post('/signup', (req, res) => {
   })
 })
 
+app.post('/signin', (req, res) => {
+  // get user data
+  const { email, password } = req.body;
+
+  // check for user in database
+  const dbConnection = async () => {
+    const user = await database.user.findMany({
+      where: {
+        email: email
+      }
+    })
+    return user
+  };
+
+  dbConnection()
+  .then(async (user) => {
+    if (user.length === 0) {
+      res.status(404)
+      res.type('json')
+      res.send({ msg: 'user not found, please sign in' })
+      res.end()
+    }
+    // check that passwords match
+    try {
+      const match: boolean = await bcrypt.compare(password, user[0].password)
+      if (match) {
+        // create jwt (1 day expiration)
+        
+        res.status(200)
+        res.type('json')
+        // send jwt and user data (minus password) in response
+        res.send({ msg: 'welcome' })
+        res.end()
+      }
+      else {
+        res.status(401)
+        res.type('json')
+        res.send({ msg: 'incorrect password' })
+        res.end()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  })
+  .catch ( async (error) => {
+    console.log("an error occured /n/n/n")
+    console.log(error)
+    process.exit(1)
+  })
+  .finally(async() => {
+    await database.$disconnect()
+  })
+})
 
 app.get('/database', (_, res) => {
   async function db_connection() {
