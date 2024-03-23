@@ -143,7 +143,7 @@ app.post('/signin', (req, res) => {
       const match: boolean = await bcrypt.compare(password, user.password)
       if (match) {
         // create jwt (1 day expiration)
-        const jwt = jsonwebtoken.sign({ email, password }, jwtSecret, { expiresIn: 86400 });
+        const jwt = jsonwebtoken.sign({ email }, jwtSecret, { expiresIn: 86400 });
         res.status(200)
         res.type('json')
         // send jwt and user data (minus password) in response
