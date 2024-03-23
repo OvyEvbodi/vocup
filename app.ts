@@ -31,9 +31,31 @@ app.get('/', (_, res) => {
 })
 
 
-// sign up--------------------------------------------------------------------------------------
-app.get('/profile', (req, res) => {
-  //profile backend logic
+// save word--------------------------------------------------------------------------------------
+app.post('/saveword', (req, res) => {
+  // verify jwt in req
+  try {
+    const bearer: string  = req.headers?.authorization?.split(' ')[1]!
+    console.log('verifying you!')
+    const validToken = jsonwebtoken.verify(bearer, jwtSecret)
+
+    res.send(bearer && bearer)
+    console.log(bearer && bearer)
+    console.log(validToken)
+    res.end()
+  } catch (error) {
+    // error handling block
+    console.log(error)
+    res.end()
+  }
+  // get user using email 
+  // save new word to stats
+  // res.type('json')
+
+  // console.log(req.headers.authorization)
+  // console.log(req.body)
+  // res.send('invalid token')
+  // res.end()
 })
 
 // sign up--------------------------------------------------------------------------------------
