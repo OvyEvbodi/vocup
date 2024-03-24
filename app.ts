@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import express from 'express'
-import jsonwebtoken, { Secret } from 'jsonwebtoken'
+import jsonwebtoken, { Secret, JwtPayload } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
 const app = express();
@@ -37,7 +37,21 @@ app.post('/saveword', (req, res) => {
   try {
     const bearer: string  = req.headers?.authorization?.split(' ')[1]!
     console.log('verifying you!')
-    const validToken = jsonwebtoken.verify(bearer, jwtSecret)
+    const validToken = jsonwebtoken.verify(bearer, jwtSecret) as VocupJwtPayload
+
+    // get user using email
+    interface VocupJwtPayload extends JwtPayload{
+      email: string
+    }
+    const userEmail: string = validToken.email
+    const dbConnection = async () => {
+      await database.user.update({
+        where: {
+          email: userEmail
+        },
+        data: {}
+      })
+    }
 
     res.send(bearer && bearer)
     console.log(bearer && bearer)
@@ -48,7 +62,6 @@ app.post('/saveword', (req, res) => {
     console.log(error)
     res.end()
   }
-  // get user using email 
   // save new word to stats
   // res.type('json')
 
