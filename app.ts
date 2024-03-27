@@ -49,7 +49,13 @@ app.post('/saveword', (req, res) => {
         where: {
           email: userEmail
         },
-        data: {}
+        data: {
+          stats: { 
+            word_count: 1,
+            // words: {upsert:{set: {name: 'hover'}}}
+            
+        }
+        }
       })
     }
 
