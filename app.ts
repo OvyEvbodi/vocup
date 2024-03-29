@@ -45,19 +45,19 @@ app.post('/saveword', (req, res) => {
     }
     const userEmail: string = validToken.email
     const dbConnection = async () => {
-    //   await database.user.update({
-    //     where: {
-    //       email: userEmail
-    //     },
-    //     data: {
-    //       stats: { 
-    //         word_count: 1,
-    //         // words: {upsert:{set: {name: 'hover'}}}
+      await database.user.update({
+        where: {
+          email: userEmail
+        },
+        data: {
+          stats: { 
+            word_count: 1,
+            // words: {upsert:{set: {name: 'hover'}}}
             
-    //     }
-    //     }
-    //   })
-    // }
+        }
+        }
+      })
+    }
 
     res.send(bearer && bearer)
     console.log(bearer && bearer)
