@@ -52,7 +52,7 @@ app.post('/saveword', (req, res) => {
         data: {
           stats: { 
             word_count: 1,
-            // words: {upsert:{set: {name: 'hover'}}}
+            words: {upsert:{set: {name: 'hover'}}}
             
         }
         }
