@@ -69,7 +69,7 @@ app.post('/saveword', (req, res) => {
     res.end()
   }
   // save new word to stats
-  // res.type('json')
+  res.type('json')
 
   // console.log(req.headers.authorization)
   // console.log(req.body)
