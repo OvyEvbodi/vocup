@@ -44,20 +44,20 @@ app.post('/saveword', (req, res) => {
       email: string
     }
     const userEmail: string = validToken.email
-    const dbConnection = async () => {
-      await database.user.update({
-        where: {
-          email: userEmail
-        },
-        data: {
-          stats: { 
-            word_count: 1,
-            words: {upsert:{data: {name: 'hover'}}}
+    // const dbConnection = async () => {
+    //   await database.user.update({
+    //     where: {
+    //       email: userEmail
+    //     },
+    //     data: {
+    //       stats: { 
+    //         word_count: 1,
+    //         words: {upsert:{data: {name: 'hover'}}}
             
-        }
-        }
-      })
-    }
+    //     }
+    //     }
+    //   })
+    // }
 
     res.send(bearer && bearer)
     console.log(bearer && bearer)
@@ -185,7 +185,7 @@ app.post('/signin', (req, res) => {
     }
   })
   .catch ( async (error) => {
-    console.log("an error occured /n/n/n")
+    console.log("an error occured \n\n\n")
     console.log(error)
     process.exit(1)
   })
@@ -195,14 +195,14 @@ app.post('/signin', (req, res) => {
 })
 
 app.get('/database', (_, res) => {
-  async function db_connection() {
-  const allUsers = await database.user.findMany();
-  console.log(allUsers)
-  return allUsers
-}
-
-  //convert to try catch bloc
-  db_connection()
+  try{
+      async function db_connection() {
+      const allUsers = await database.user.findMany();
+      console.log(allUsers)
+      return allUsers
+    }
+  
+    db_connection()
     .then(users => {
       res.type('json')
       res.send(JSON.stringify(users))
@@ -215,6 +215,10 @@ app.get('/database', (_, res) => {
     .finally(async() => {
       await database.$disconnect()
     })
+  } catch (error) {
+    console.log(`The following error occured\n${error}`)
+  }
+  
 })
 
   app.listen(PORT, () => {
