@@ -21,18 +21,24 @@ model User {
   password   String
   created_at DateTime   @default(now())
   updated_at DateTime   @default(now())
-  stats     Stats[]
+  stats     Stats?
 }
 
-// defining the stats interface
+// defining the stats model
 
-type Stats {
+model Stats {
+  id          String  @id   @default(auto()) @map("_id") @db.ObjectId
   words       Word[]
-  word_count  Int
+  word_count  Int     
+  statsUser   User    @relation(fields:[usermail], references: [email])
+  usermail      String    @unique
 }
 
-// defining the a word
-type Word {
+// defining the a word model
+model Word {
+  id     String  @id   @default(auto()) @map("_id") @db.ObjectId
   name   String
   date   DateTime @default(now())
+  stats  Stats    @relation(fields: [worduser], references: [usermail])
+  worduser      String  @unique
 }
