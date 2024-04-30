@@ -44,32 +44,44 @@ app.post('/saveword', (req, res) => {
       email: string
     }
     const userEmail: string = validToken.email
-    // const dbConnection = async () => {
-    //   await database.user.update({
-    //     where: {
-    //       email: userEmail
-    //     },
-    //     data: {
-    //       stats: { 
-    //         word_count: 1,
-    //         words: {upsert:{data: {name: 'hover'}}}
-            
-    //     }
-    //     }
-    //   })
-    // }
-
+    const dbConnection = async () => {
+      await database.stats.create({
+        data: {
+          word_count: 1,
+          words: {
+            create: {
+              name: "hello"
+            }
+          },
+          statsUser: {
+            connect: {
+              email: userEmail
+            }
+          }
+        }
+      })
+    }
+    dbConnection()
+    .catch (async (error) => {
+      console.log("an error occured \n\n\n")
+      console.log(error)
+      res.status(500)
+      process.exit(1)
+    })
+    .finally(async() => {
+      await database.$disconnect()
+    })
     res.send(bearer && bearer)
     console.log(bearer && bearer)
     console.log(validToken)
     res.end()
   } catch (error) {
     // error handling block
-    console.log(error)
-    res.end()
+    // console.log(error)
+    // res.end()
   }
   // save new word to stats
-  res.type('json')
+  // res.type('json')
 
   // console.log(req.headers.authorization)
   // console.log(req.body)
@@ -104,7 +116,7 @@ app.post('/signup', (req, res) => {
     };
     dbConnection()
       .catch (async (error) => {
-        console.log("an error occured /n/n/n")
+        console.log("an error occured \n\n\n")
         console.log(error)
         res.status(500)
         process.exit(1)

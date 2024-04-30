@@ -31,7 +31,7 @@ model Stats {
   words       Word[]
   word_count  Int     
   statsUser   User    @relation(fields:[usermail], references: [email])
-  usermail      String    @unique
+  usermail    String    @unique
 }
 
 // defining the a word model
