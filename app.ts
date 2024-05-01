@@ -47,23 +47,49 @@ app.post('/saveword', (req, res) => {
 
     //get word from body
     const newWord = req.body.word;
+    const checkStats = async () => {
+      try {
+        const stat = await database.stats.findUnique({
+          where: {
+            usermail : userEmail
+          }
+        })
+        console.log(stat)
+        if (stat !== null) {
+          return stat
+        } else {
+          return false
+        }
+      } catch (error) {
+        console.log(error)
+        return false
+      }
+    }
 
     const dbConnection = async () => {
-      await database.stats.create({
-        data: {
-          word_count: 1,
-          words: {
-            create: {
-              name: newWord
-            }
-          },
-          statsUser: {
-            connect: {
-              email: userEmail
+      // if no saved words, create new stats, else, update stats
+      const statsExists = await checkStats()
+      if (statsExists) {
+        // update new word
+        console.log(statsExists)
+        console.log(`${statsExists} stats already exists`)
+      } else {
+        await database.stats.create({
+          data: {
+            word_count: 1,
+            words: {
+              create: {
+                name: newWord
+              }
+            },
+            statsUser: {
+              connect: {
+                email: userEmail
+              }
             }
           }
-        }
-      })
+        })
+    }
     }
     dbConnection()
     .catch (async (error) => {
@@ -81,8 +107,8 @@ app.post('/saveword', (req, res) => {
     res.end()
   } catch (error) {
     // error handling block
-    // console.log(error)
-    // res.end()
+    console.log(error)
+    res.end()
   }
   // save new word to stats
   // res.type('json')
@@ -210,10 +236,15 @@ app.post('/signin', (req, res) => {
   })
 })
 
+// database -------------------------------------------------------------------
 app.get('/database', (_, res) => {
   try{
       async function db_connection() {
-      const allUsers = await database.user.findMany();
+      const allUsers = await database.user.findMany({
+        include: {
+          stats: true
+        }
+      });
       console.log(allUsers)
       return allUsers
     }
