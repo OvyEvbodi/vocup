@@ -44,13 +44,17 @@ app.post('/saveword', (req, res) => {
       email: string
     }
     const userEmail: string = validToken.email
+
+    //get word from body
+    const newWord = req.body.word;
+
     const dbConnection = async () => {
       await database.stats.create({
         data: {
           word_count: 1,
           words: {
             create: {
-              name: "hello"
+              name: newWord
             }
           },
           statsUser: {
