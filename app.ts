@@ -31,7 +31,38 @@ app.get('/', (_, res) => {
 })
 
 
-// save word--------------------------------------------------------------------------------------
+// get words ------------------------------------------------------------------------------------
+app.get('/getwords', (req, res) => {
+  //get words from db, send in json
+  try {
+    //query db
+    const dbConnection = async () => {
+      const { statsId } = req.body;
+      const userStats = await database.stats.findUnique({
+        where: {
+          id: statsId
+        },
+        include: {
+          words: true
+        }
+      })
+      return userStats
+    }
+    dbConnection()
+    .then((userStats) => {
+      res.status(200)
+      res.type('json')
+      res.send(userStats)
+      res.end()
+    })
+  } catch (error) {
+    res.status(500)
+    res.send('Error fetching words')
+    res.end()
+  }
+})
+
+// save word-------------------------------------------------------------------------------------
 app.post('/saveword', (req, res) => {
   // verify jwt in req
   try {
