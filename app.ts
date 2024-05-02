@@ -57,7 +57,6 @@ app.post('/saveword', (req, res) => {
         })
         return stat
       } catch (error) {
-        console.log(error)
         return false
       }
     }
@@ -115,10 +114,10 @@ app.post('/saveword', (req, res) => {
     }
     dbConnection()
     .catch (async (error) => {
-      console.log("an error occured \n\n\n")
+      console.log("unable to save word")
       console.log(error)
       res.status(500)
-      process.exit(1)
+      res.end()
     })
     .finally(async() => {
       await database.$disconnect()
@@ -129,17 +128,13 @@ app.post('/saveword', (req, res) => {
     res.end()
   } catch (error) {
     // error handling block
-    console.log(error)
+    console.log(req.headers.authorization)
+    res.send('invalid token')
+    res.status(500)
     res.end()
   }
-  // save new word to stats
-  // res.type('json')
-
-  // console.log(req.headers.authorization)
-  // console.log(req.body)
-  // res.send('invalid token')
-  // res.end()
 })
+
 
 // sign up--------------------------------------------------------------------------------------
 app.post('/signup', (req, res) => {
@@ -171,7 +166,7 @@ app.post('/signup', (req, res) => {
         console.log("an error occured \n\n\n")
         console.log(error)
         res.status(500)
-        process.exit(1)
+        res.end()
       })
       .finally(async() => {
         await database.$disconnect()
@@ -187,6 +182,7 @@ app.post('/signup', (req, res) => {
       res.end()
   })
 })
+
 
 // signin---------------------------------------------------------------------
 app.post('/signin', (req, res) => {
@@ -259,12 +255,13 @@ app.post('/signin', (req, res) => {
   .catch ( async (error) => {
     console.log("an error occured \n\n\n")
     console.log(error)
-    process.exit(1)
+    res.end()
   })
   .finally(async() => {
     await database.$disconnect()
   })
 })
+
 
 // database -------------------------------------------------------------------
 app.get('/database', (_, res) => {
@@ -291,7 +288,7 @@ app.get('/database', (_, res) => {
     .catch(async (error) => {
       console.log("an error occured /n/n/n")
       console.log(error)
-      process.exit(1)
+      res.end()
     })
     .finally(async() => {
       await database.$disconnect()
