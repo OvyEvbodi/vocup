@@ -46,7 +46,8 @@ app.post('/saveword', (req, res) => {
     const userEmail: string = validToken.email
 
     //get word from body
-    const newWord = req.body.word;
+    const { statsId, newWord } = req.body;
+    const wordCount = Number(req.body.wordCount);
     const checkStats = async () => {
       try {
         const stat = await database.stats.findUnique({
@@ -68,14 +69,13 @@ app.post('/saveword', (req, res) => {
       if (statsExists != null) {
         // update new word
         console.log(statsExists)
-        // const wordCount: number = statsExists.word_count;
         const addWord = async () => {
           await database.word.create({
           data: {
             name: newWord,
             stats: {
               connect: {
-                usermail: userEmail
+                id: statsId
               }
             }
           }
@@ -88,7 +88,7 @@ app.post('/saveword', (req, res) => {
             usermail: userEmail
           },
           data: {
-            word_count: 3
+            word_count: wordCount + 1
           }
         })
       })
