@@ -54,12 +54,7 @@ app.post('/saveword', (req, res) => {
             usermail : userEmail
           }
         })
-        console.log(stat)
-        if (stat !== null) {
-          return stat
-        } else {
-          return false
-        }
+        return stat
       } catch (error) {
         console.log(error)
         return false
@@ -69,11 +64,36 @@ app.post('/saveword', (req, res) => {
     const dbConnection = async () => {
       // if no saved words, create new stats, else, update stats
       const statsExists = await checkStats()
-      if (statsExists) {
+      
+      if (statsExists != null) {
         // update new word
         console.log(statsExists)
+        // const wordCount: number = statsExists.word_count;
+        const addWord = async () => {
+          await database.word.create({
+          data: {
+            name: newWord,
+            stats: {
+              connect: {
+                usermail: userEmail
+              }
+            }
+          }
+        })
+      }
+      addWord()
+      .then(async () => {
+        await database.stats.update({
+          where: {
+            usermail: userEmail
+          },
+          data: {
+            word_count: 3
+          }
+        })
+      })
         console.log(`${statsExists} stats already exists`)
-      } else {
+      } else if (statsExists == null) {
         await database.stats.create({
           data: {
             word_count: 1,
@@ -89,6 +109,8 @@ app.post('/saveword', (req, res) => {
             }
           }
         })
+    } else {
+      console.error('An error occured, couln\'t add word')
     }
     }
     dbConnection()
@@ -182,6 +204,13 @@ app.post('/signin', (req, res) => {
     const user = await database.user.findUnique({
       where: {
         email: email
+      }, 
+      include: {
+        stats: {
+          include: {
+            words: true
+          }
+        }
       }
     })
     return user
@@ -212,7 +241,8 @@ app.post('/signin', (req, res) => {
           msg: 'signin sucessful',
           jwt,
           email: user.email,
-          username: user.username
+          username: user.username,
+          user
        })
         res.end()
       }
@@ -242,7 +272,11 @@ app.get('/database', (_, res) => {
       async function db_connection() {
       const allUsers = await database.user.findMany({
         include: {
-          stats: true
+          stats: {
+            include: {
+              words: true
+            }
+          }
         }
       });
       console.log(allUsers)

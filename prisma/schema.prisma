@@ -39,6 +39,6 @@ model Word {
   id     String  @id   @default(auto()) @map("_id") @db.ObjectId
   name   String
   date   DateTime @default(now())
-  stats  Stats    @relation(fields: [worduser], references: [usermail])
-  worduser      String  @unique
+  stats  Stats    @relation(fields: [worduser], references: [id])
+  worduser      String  
 }
