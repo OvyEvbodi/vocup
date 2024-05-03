@@ -32,15 +32,15 @@ app.get('/', (_, res) => {
 
 
 // get words ------------------------------------------------------------------------------------
-app.get('/getwords', (req, res) => {
+app.post('/getwords', (req, res) => {
   //get words from db, send in json
   try {
     //query db
     const dbConnection = async () => {
-      const { statsId } = req.body;
+      const { email } = req.body;
       const userStats = await database.stats.findUnique({
         where: {
-          id: statsId
+          usermail: email
         },
         include: {
           words: true
