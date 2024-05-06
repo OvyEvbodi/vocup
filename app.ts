@@ -33,11 +33,18 @@ app.get('/', (_, res) => {
 
 // get words ------------------------------------------------------------------------------------
 app.post('/getwords', (req, res) => {
+  // set response headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Origin', 'https://vocup.vercel.app');
+  res.setHeader('Content-Type', 'Application/json');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+
   //get words from db, send in json
   try {
     //query db
     const dbConnection = async () => {
       const { email } = req.body;
+      console.log(email)
       const userStats = await database.stats.findUnique({
         where: {
           usermail: email
@@ -64,6 +71,12 @@ app.post('/getwords', (req, res) => {
 
 // save word-------------------------------------------------------------------------------------
 app.post('/saveword', (req, res) => {
+  // set response headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Origin', 'https://vocup.vercel.app');
+  res.setHeader('Content-Type', 'Application/json');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+
   // verify jwt in req
   try {
     const bearer: string  = req.headers?.authorization?.split(' ')[1]!
@@ -206,7 +219,6 @@ app.post('/signup', (req, res) => {
       res.setHeader('Origin', '*');
       res.setHeader('Content-Type', 'Application/json');
       res.setHeader('Access-Control-Allow-Headers', '*');
-
       res.status(201)
       res.type('json')
       res.send({ msg: "user created", email })
