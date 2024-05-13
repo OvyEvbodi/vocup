@@ -44,7 +44,6 @@ app.post('/getwords', (req, res) => {
     //query db
     const dbConnection = async () => {
       const { email } = req.body;
-      console.log(email)
       const userStats = await database.stats.findUnique({
         where: {
           usermail: email
